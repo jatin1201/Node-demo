@@ -4,15 +4,15 @@ This is a guide to deploy a Dockerized Node.js application on AWS EC2 instances 
 
 ## The solution uses the following AWS services: ##
 
-EC2 instances running Docker containers to host the Node.js application
+- EC2 instances running Docker containers to host the Node.js application
 
-Application Load Balancer to distribute the incoming traffic across the EC2 instances
+- Application Load Balancer to distribute the incoming traffic across the EC2 instances
 
-Auto Scaling Group to scale the EC2 instances up or down based on CPU usage
+- Auto Scaling Group to scale the EC2 instances up or down based on CPU usage
 
-CloudWatch Alarms to monitor the health of the application and notify if there are any issues
+- CloudWatch Alarms to monitor the health of the application and notify if there are any issues
 
-S3 bucket to archive the application logs
+- S3 bucket to archive the application logs
 
 
 # Cost Analysis #
