@@ -1,0 +1,36 @@
+Resources:
+  AppUnhealthyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: AppUnhealthyAlarm
+      ComparisonOperator: LessThanThreshold
+      EvaluationPeriods: 1
+      MetricName: HTTPCode_ELB_5XX_Count
+      Namespace: AWS/ApplicationELB
+      Period: 60
+      Statistic: Sum
+      Threshold: 100
+      AlarmActions:
+        - !Ref NotificationTopic
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !Ref LoadBalancer
+      TreatMissingData: notBreaching
+
+  AppErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: AppErrorsAlarm
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      EvaluationPeriods: 1
+      MetricName: HTTPCode_ELB_5XX_Count
+      Namespace: AWS/ApplicationELB
+      Period: 60
+      Statistic: Sum
+      Threshold: 100
+      AlarmActions:
+        - !Ref NotificationTopic
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !Ref LoadBalancer
+      TreatMissingData: notBreaching
