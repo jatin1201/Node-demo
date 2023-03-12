@@ -15,14 +15,15 @@ CloudWatch Alarms to monitor the health of the application and notify if there a
 S3 bucket to archive the application logs
 
 
-#Cost Analysis#
+# Cost Analysis #
 
 The cost of running this solution depends on the following factors:
 
-The number and type of EC2 instances used
-The data transfer costs for incoming and outgoing traffic
-The storage costs for the S3 bucket
-EC2 Instance Costs
+- The number and type of EC2 instances used
+- The data transfer costs for incoming and outgoing traffic
+- The storage costs for the S3 bucket
+- EC2 Instance Costs
+
 The cost of running EC2 instances depends on the instance type, region, and the number of instances used. For this solution, we are going to use t2.micro instances with on-demand pricing, which cost $0.0116 per hour. Assuming we run 2 instances 24/7 for a month, the cost would be:
  ### $0.0116 * 2 * 24 * 30 = $16.69 ###
  
