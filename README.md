@@ -1,8 +1,8 @@
-#Dockerized Node.js Application on AWS EC2 with Autoscaling, Load Balancing, and Log Archival
+# Dockerized Node.js Application on AWS EC2 with Autoscaling, Load Balancing, and Log Archival #
 
 This is a guide to deploy a Dockerized Node.js application on AWS EC2 instances with autoscaling, load balancing, and log archival. The application we are going to use is the express-example-app available at https://github.com/strongloop/express-example-app/blob/master/index.js.
 
-# The solution uses the following AWS services:
+## The solution uses the following AWS services: ##
 
 EC2 instances running Docker containers to host the Node.js application
 
