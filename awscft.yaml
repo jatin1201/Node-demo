@@ -1,0 +1,95 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+  VPC:
+    Type: AWS::EC2::VPC::Id
+    Description: ID of the VPC where the resources will be created
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: List of Subnet IDs where the resources will be created
+
+Resources:
+  EC2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Policies:
+        - PolicyName: CloudWatchLogsPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:log-group:/var/log/messages:*
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref EC2InstanceRole
+
+  LaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId: ami-0c94855ba95c71c99
+      InstanceType: t2.micro
+      SecurityGroups:
+        - !Ref EC2InstanceSecurityGroup
+      KeyName: !Ref KeyName
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          echo ECS_CLUSTER=${ClusterName} >> /etc/ecs/ecs.config
+          echo ECS_BACKEND_HOST= >> /etc/ecs/ecs.config
+          yum install -y awslogs
+          service awslogsd start
+          chkconfig awslogs on
+          docker run -p 8080:8080 --rm -d strongloop/express-example-app
+
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AvailabilityZones: !Ref Subnets
+      VPCZoneIdentifier: !Join [',', !Ref Subnets]
+      LaunchConfigurationName: !Ref LaunchConfiguration
+      MinSize: '1'
+      MaxSize: '3'
+      DesiredCapacity: '1'
+      Tags:
+        - Key: Name
+          Value: MyEC2Instance
+          PropagateAtLaunch: true
+      TargetGroupARNs:
+        - !Ref TargetGroup
+      Cooldown: '300'
+      HealthCheckType: EC2
+      HealthCheckGracePeriod: 300
+      MetricsCollection:
+        - Granularity: '1Minute'
+          Metrics:
+            - GroupName: AWS/EC2
+              MetricName: CPUUtilization
+              Unit: Percent
+      SuspendedProcesses:
+        - ProcessName: ReplaceUnhealthy
+          SuspensionReason: 'Scale in or out activities suspended due to insufficient capacity or constraints'
+
+  EC2InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow incoming traffic on port 22 and 8080
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+         
