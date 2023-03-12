@@ -28,13 +28,13 @@ The cost of running EC2 instances depends on the instance type, region, and the 
  ### $0.0116 * 2 * 24 * 30 = $16.69 ###
  
  If we use spot pricing instead of on-demand pricing, the cost can be significantly reduced. For example, at the time of writing this README, the spot price for t2.micro instances in the us-east-1 region is around $0.002 per hour. This would reduce the cost to:
- ###$0.002 * 2 * 24 * 30 = $2.88###
+ ### $0.002 * 2 * 24 * 30 = $2.88 ###
 
 
 # Load Balancer Costs #
 
 The Application Load Balancer charges based on the number of Load Balancer Capacity Units (LCUs) used per hour and the amount of data processed. For this solution, assuming a low amount of traffic, we can use a single LCU and pay $0.008 per hour. Assuming we use the Load Balancer for the same amount of time as the EC2 instances, the cost would be:
-###$0.008 * 24 * 30 = $5.76###
+### $0.008 * 24 * 30 = $5.76 ###
 
 # Data Transfer Costs #
 
@@ -43,5 +43,5 @@ The data transfer costs depend on the amount of data transferred between the EC2
 # S3 Storage Costs #
 
 The cost of storing data in S3 depends on the amount of storage used and the storage class used. For this solution, we are going to use the STANDARD storage class, which costs $0.023 per GB per month. Assuming we store 1 GB of data per month, the cost would be:
-###$0.023 * 1 = $0.023###
+### $0.023 * 1 = $0.023 ###
 
